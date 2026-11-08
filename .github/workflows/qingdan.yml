@@ -7,6 +7,10 @@ on:
       - 'qingdan/**'
   workflow_dispatch:
 
+concurrency:
+  group: qingdan-release
+  cancel-in-progress: false
+
 permissions:
   contents: write
 

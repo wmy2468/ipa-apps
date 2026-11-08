@@ -7,6 +7,10 @@ on:
       - 'aibill/**'
   workflow_dispatch:
 
+concurrency:
+  group: aibill-release
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
