@@ -44,7 +44,7 @@ project.yml              XcodeGen 工程描述
 
 工程不含 `.xcodeproj`，由 CI 用 XcodeGen 现场生成：
 
-1. 推送到 GitHub 私有仓库的 `main` 分支，或手动跑 `aibill` workflow。
+1. 推送到仓库的 `main` 分支，或手动跑 `aibill` workflow。
 2. runner 执行 `xcodegen generate` → `xcodebuild -sdk iphoneos CODE_SIGNING_ALLOWED=NO` → `codesign --sign -`（ad-hoc）。
 3. 产物 `AIBill.ipa` 在 Releases 里按版本命名的包（如 `AIBill-1.2-3.ipa`）下载。
 

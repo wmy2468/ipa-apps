@@ -1,6 +1,6 @@
 # IPA Apps
 
-三个只给自己用的 iOS App，放在一个私有仓库里。每个 App 有独立 workflow，改哪个目录只构建哪个，产物自动发布到 Releases（无签名 IPA，装 TrollStore 即可）。
+三个只给自己用的 iOS App，放在一个公开仓库里。每个 App 有独立 workflow，改哪个目录只构建哪个，产物自动发布到 Releases（无签名 IPA，装 TrollStore 即可）。
 
 | App | 目录 | Release 标签 | 说明 |
 | --- | --- | --- | --- |
@@ -8,7 +8,7 @@
 | 清单 Qingdan | `qingdan/` | `qingdan-v<版本>-<构建号>` | 待办 + 到点反复催办 |
 | 票记 ReceiptLedger | `receipt-ledger/` | `receipt-ledger-v<版本>-<构建号>` | 本地 OCR 记账 + 语音记账 |
 
-下载入口（私有库，手机 GitHub App 用 `wmy2468` 账号登录后可见）：<https://github.com/wmy2468/ipa-apps/releases>
+下载入口（公开库，免登录，手机浏览器或 GitHub App 直接打开）：<https://github.com/wmy2468/ipa-apps/releases>
 
 每次构建都会按 App 的版本号命名并单独发一个 Release，例如 `AIBill-1.2-3.ipa`、`Qingdan-1.2.0-4.ipa`。版本不变重跑同一版本会更新那份包；版本号变了就是新的 Release，旧包不会被覆盖。装哪个版本认文件名里的版本号。
 

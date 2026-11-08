@@ -14,7 +14,7 @@
 
 ## 怎么拿到 IPA（不需要 Mac）
 
-1. 把这个仓库推到 GitHub（私有仓库也行）
+1. 把这个仓库推到 GitHub（公开或私有都行）
 2. 进仓库 **Actions** 标签 → 选 `qingdan` → **Run workflow**
 3. 等 3–5 分钟（首次会慢一点，要装 XcodeGen）
 4. 构建完，在 Releases 里按版本命名的包（如 `Qingdan-1.2.0-4.ipa`）下载
