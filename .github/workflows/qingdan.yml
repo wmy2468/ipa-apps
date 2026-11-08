@@ -45,6 +45,7 @@ jobs:
             build | tail -40
 
       - name: Package IPA
+        id: pkg
         run: |
           set -euo pipefail
           APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" | head -1)
@@ -52,17 +53,26 @@ jobs:
           test -d "$APP"
           codesign --force --deep --sign - "$APP"
           codesign -dv "$APP" 2>&1 | head -4
+
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$APP/Info.plist")
+          BUILD=$(/usr/libexec/PlistBuddy -c "Print :CFBundleVersion" "$APP/Info.plist")
+          NAME="Qingdan-${VERSION}-${BUILD}"
+
           rm -rf out
           mkdir -p out/Payload
           cp -R "$APP" out/Payload/
           cd out
-          zip -qry Qingdan.ipa Payload
-          ls -lh Qingdan.ipa
+          zip -qry "${NAME}.ipa" Payload
+          ls -lh "${NAME}.ipa"
+
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
-          name: qingdan-ipa
-          path: qingdan/ios/out/Qingdan.ipa
+          name: qingdan-ipa-${{ steps.pkg.outputs.version }}-${{ steps.pkg.outputs.build }}
+          path: qingdan/ios/out/${{ steps.pkg.outputs.name }}.ipa
           if-no-files-found: error
           retention-days: 30
 
@@ -71,7 +81,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh release delete qingdan-latest --yes --cleanup-tag 2>/dev/null || true
-          gh release create qingdan-latest out/Qingdan.ipa \
-            --title "清单 Qingdan 最新包" \
-            --notes "自动构建：$(date -u +%Y-%m-%dT%H:%M:%SZ)，提交 ${GITHUB_SHA:0:7}"
+          NAME="${{ steps.pkg.outputs.name }}"
+          VERSION="${{ steps.pkg.outputs.version }}"
+          BUILD="${{ steps.pkg.outputs.build }}"
+          TAG="qingdan-v${VERSION}-${BUILD}"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "out/${NAME}.ipa" --clobber
+          else
+            gh release create "$TAG" "out/${NAME}.ipa" \
+              --title "清单 Qingdan v${VERSION} (${BUILD})" \
+              --notes "自动构建：$(date -u +%Y-%m-%dT%H:%M:%SZ)，提交 ${GITHUB_SHA:0:7}"
+          fi

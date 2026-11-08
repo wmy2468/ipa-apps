@@ -17,7 +17,7 @@
 1. 把这个仓库推到 GitHub（私有仓库也行）
 2. 进仓库 **Actions** 标签 → 选 `qingdan` → **Run workflow**
 3. 等 3–5 分钟（首次会慢一点，要装 XcodeGen）
-4. 构建完，在 Releases 的 `qingdan-latest` 标签下下载 `Qingdan.ipa`
+4. 构建完，在 Releases 里按版本命名的包（如 `Qingdan-1.2.0-4.ipa`）下载
 5. 解压得到 `Qingdan.ipa`
 
 ## 怎么装（TrollStore）

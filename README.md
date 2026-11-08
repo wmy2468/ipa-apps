@@ -4,15 +4,15 @@
 
 | App | 目录 | Release 标签 | 说明 |
 | --- | --- | --- | --- |
-| 智账 AIBill | `aibill/` | `aibill-latest` | 拍小票 AI 记账（通义千问 VL）+ 手动/语音记账、多账户、预算提醒、导出 Excel |
-| 清单 Qingdan | `qingdan/` | `qingdan-latest` | 待办 + 到点反复催办 |
-| 票记 ReceiptLedger | `receipt-ledger/` | `receipt-ledger-latest` | 本地 OCR 记账 + 语音记账 |
+| 智账 AIBill | `aibill/` | `aibill-v<版本>-<构建号>` | 拍小票 AI 记账（通义千问 VL）+ 手动/语音记账、多账户、预算提醒、导出 Excel |
+| 清单 Qingdan | `qingdan/` | `qingdan-v<版本>-<构建号>` | 待办 + 到点反复催办 |
+| 票记 ReceiptLedger | `receipt-ledger/` | `receipt-ledger-v<版本>-<构建号>` | 本地 OCR 记账 + 语音记账 |
 
-下载入口（私有库，手机 GitHub App 用 `wmy2468` 账号登录后可见）：
+下载入口（私有库，手机 GitHub App 用 `wmy2468` 账号登录后可见）：<https://github.com/wmy2468/ipa-apps/releases>
 
-- <https://github.com/wmy2468/ipa-apps/releases/tag/aibill-latest>
-- <https://github.com/wmy2468/ipa-apps/releases/tag/qingdan-latest>
-- <https://github.com/wmy2468/ipa-apps/releases/tag/receipt-ledger-latest>
+每次构建都会按 App 的版本号命名并单独发一个 Release，例如 `AIBill-1.2-3.ipa`、`Qingdan-1.2.0-4.ipa`。版本不变重跑同一版本会更新那份包；版本号变了就是新的 Release，旧包不会被覆盖。装哪个版本认文件名里的版本号。
+
+改版本号在各自的 `project.yml`：`MARKETING_VERSION` 是版本，`CURRENT_PROJECT_VERSION` 是构建号。
 
 ## 构建
 

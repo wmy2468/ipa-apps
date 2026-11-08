@@ -8,7 +8,7 @@ iOS 记账 App：拍小票 → 本地 OCR（Vision）自动填金额/商户/日�
 
 ## 自动构建
 
-推送到 `main` 后 GitHub Actions 会编译出**未签名 IPA**，自动发布到 Releases 的 `receipt-ledger-latest` 标签。
+推送到 `main` 后 GitHub Actions 会编译出**未签名 IPA**，自动发布到 Releases 里按版本命名的包（如 `ReceiptLedger-1.1-2.ipa`）。
 
 ## 安装（TrollStore）
 
