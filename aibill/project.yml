@@ -1,0 +1,49 @@
+name: AIBill
+options:
+  minimumXcodeGenVersion: "2.35.0"
+  bundleIdPrefix: com.wmy
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: ""
+    CODE_SIGNING_REQUIRED: "NO"
+    CODE_SIGNING_ALLOWED: "NO"
+    ENABLE_USER_SCRIPT_SANDBOXING: "NO"
+
+targets:
+  AIBill:
+    type: application
+    platform: iOS
+    sources:
+      - path: AIBill
+        excludes:
+          - "Info.plist"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wmy.aibill
+        PRODUCT_NAME: AIBill
+        GENERATE_INFOPLIST_FILE: "NO"
+        INFOPLIST_FILE: AIBill/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"
+        MARKETING_VERSION: "1.2"
+        CURRENT_PROJECT_VERSION: "3"
+        SUPPORTS_MACCATALYST: "NO"
+        SWIFT_EMIT_LOC_STRINGS: "YES"
+
+schemes:
+  AIBill:
+    build:
+      targets:
+        AIBill: all
+    run:
+      config: Debug
+    archive:
+      config: Release

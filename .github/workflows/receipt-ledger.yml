@@ -1,0 +1,73 @@
+name: receipt-ledger
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'receipt-ledger/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: receipt-ledger
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project ReceiptLedger.xcodeproj \
+            -scheme ReceiptLedger \
+            -sdk iphoneos \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        run: |
+          set -euo pipefail
+          APP="build/Build/Products/Release-iphoneos/ReceiptLedger.app"
+          test -d "$APP"
+          codesign --force --deep --sign - "$APP"
+          codesign -dv "$APP" 2>&1 | head -4
+          rm -rf out
+          mkdir -p out/Payload
+          cp -R "$APP" out/Payload/
+          cd out
+          zip -qry ReceiptLedger.ipa Payload
+          ls -lh ReceiptLedger.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: receipt-ledger-ipa
+          path: receipt-ledger/out/ReceiptLedger.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish to Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release delete receipt-ledger-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create receipt-ledger-latest out/ReceiptLedger.ipa \
+            --title "票记 ReceiptLedger 最新包" \
+            --notes "自动构建：$(date -u +%Y-%m-%dT%H:%M:%SZ)，提交 ${GITHUB_SHA:0:7}"

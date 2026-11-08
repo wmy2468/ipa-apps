@@ -1,0 +1,77 @@
+name: aibill
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'aibill/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: aibill
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned app
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project AIBill.xcodeproj \
+            -scheme AIBill \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package IPA
+        run: |
+          set -euo pipefail
+          APP="build/Build/Products/Release-iphoneos/AIBill.app"
+          test -d "$APP"
+          codesign --force --deep --sign - "$APP"
+          codesign -dv "$APP" 2>&1 | head -4
+          rm -rf out
+          mkdir -p out/Payload
+          cp -R "$APP" out/Payload/
+          cd out
+          zip -qry AIBill.ipa Payload
+          ls -lh AIBill.ipa
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aibill-ipa
+          path: aibill/out/AIBill.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish to Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release delete aibill-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create aibill-latest out/AIBill.ipa \
+            --title "智账 AIBill 最新包" \
+            --notes "自动构建：$(date -u +%Y-%m-%dT%H:%M:%SZ)，提交 ${GITHUB_SHA:0:7}"
